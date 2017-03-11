@@ -1,46 +1,101 @@
-# Finetune AlexNet with Tensorflow 1.0
+# alex version 1
 
-This repository contains all the code needed to finetune [AlexNet](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf) on any arbitrary dataset. Beside the comments in the code itself, I also wrote an article which you can fine [here](https://kratzert.github.io/2017/02/24/finetuning-alexnet-with-tensorflow.html) with further explanation.
+# 代码
+https://kratzert.github.io/kratzert.github.io/2017/02/24/finetuning-alexnet-with-tensorflow.html
+## 代码结构
+name | usage
+---|---
+image_process.py | 将图片做索引：  path label 用于datagenerator读取
+datagenerator.py | 读取图片,reszie，反转，banch 等基础操作
+alexnet.py | net 核心代码
+finetune | finetune 代码
 
-All you need are the pretrained weights, which you can find [here](http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/) or convert yourself from the caffe library using [caffe-to-tensorflow](https://github.com/ethereon/caffe-tensorflow).
-If you convert them on your own, take a look on the structure of the `.npy` weights file (dict of dicts or dict of lists).
+## 使用
+1. image_process.py : 
+arg1 是训练图片位置 
+arg2 是tain.txt 和 val.txt 存放路径
+arg3 用于训练的比例 剩下的交叉验证
 
-**Note**: I won't write to much of an explanation here, as I already wrote a long article about the entire code on my blog.
+python ../../data/dogvscat/train ../../data/dogvscat 0.8
 
-## Requirements
-
-- Python 3.5 (Didn't test but should run under 2.7 as well)
-- TensorFlow 1.0
-- Numpy
-- OpenCV (If you want to use the provided ImageDataGenerator in `datagenerator.py`)
-
-## TensorBoard support
-
-The code has TensorFlows summaries implemented so that you can follow the training progress in TensorBoard. (--logdir in the config section of `finetune.py`)
-
-## Content
-
-- `alexnet.py`: Class with the graph definition of the AlexNet.
-- `finetune.py`: Script to run the finetuning process.
-- `datagenerator.py`: Some auxiliary class I wrote to load images into memory and provide batches of images with their labels on function call. Includes random shuffle and horizontal flipping.
-- `caffe_classes.py`: List of the 1000 class names of ImageNet (copied from [here](http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/)).
-- `validate_alexnet_on_imagenet.ipynb`: Notebook to test the correct implementation of AlexNet and the pretrained weights on some images from the ImageNet database.
-- `images/*`: contains three example images, needed for the notebook.
-
-## Usage
-
-All you need to touch is the `finetune.py`, although I strongly recommend to take a look at the entire code of this repository. In the `finetune.py` script you will find a section of configuration settings you have to adapt on your problem.
-If you do not want to touch the code any further than necessary you have to provide two `.txt` files to the script (`train.txt` and `val.txt`). Each of them list the complete path to your train/val images together with the class number in the following structure.
-
+train.txt 例子：
 ```
-Example train.txt:
-/path/to/train/image1.png 0
-/path/to/train/image2.png 1
-/path/to/train/image3.png 2
-/path/to/train/image4.png 0
-.
-.
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.0.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.1.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.100.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.1000.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10000.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10001.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10002.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10003.jpg 0
+/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10005.jpg 0
 ```
-were the first column is the path and the second the class label.
 
-The other option is that you bring your own method of loading images and providing batches of images and labels, but then you have to adapt the code on a few lines.
+2. finetune.py
+设置：
+```
+# Path to the textfiles for the trainings and validation set
+train_file = '../../data/dogvscat/train.txt'
+val_file = '../../data/dogvscat/val.txt'
+
+# Learning params
+learning_rate = 0.01
+num_epochs = 10
+batch_size = 128
+
+# Network params
+dropout_rate = 0.5
+num_classes = 2
+train_layers = ['fc8', 'fc7']
+
+# How often we want to write the tf.summary data to disk
+display_step = 1
+
+# Path for tf.summary.FileWriter and to store model checkpoints
+filewriter_path = "../../data/checkpoint" 
+checkpoint_path = "../../data/filewriter"
+```
+## TODO
+- conf 设置参数
+- fc训练后的前向网络
+
+# 结构
+![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/294B3ABD61F64A15A9F3C40607B14516/5969)
+
+共8层，5层convolutional，3层full connected;每减少
+1. 
+
+## Relu
+
+
+## 多GPU（2个）
+
+
+## LRN(local response normalization)
+**局部响应归一化**
+
+**比较**：响应归一化将我们的top-1与top-5误差率分别减少了1.4%与1.2%。我们也验证了该方案在CIFAR-10数据集上的有效性：四层CNN不带归一化时的测试误差率是13%，带归一化时是11%
+
+# 减少过拟合
+## data Augmentation
+1. 256 取5个227片 水平反转，共10个
+2. PCA：对于每个训练图像，我们成倍增加已有主成分，比例大小为对应特征值乘以一个从均值为0，标准差为0.1的高斯分布中提取的随机变量。
+![image](http://img.blog.csdn.net/20160111132633196)
+
+## drop out
+
+# 训练参数
+批大小为128、动力为0.9、权重衰减为0.0005
+![image](http://img.blog.csdn.net/20160111133228303)
+当验证误差率在当前学习率下不再提高时，就将学习率除以10。学习率初始化为0.01，在终止前降低三次。我们训练该网络时大致将这120万张图像的训练集循环了90次，在两个NVIDIA GTX 580 3GB GPU上花了五到六天。
+
+# 定量评价
+![image](http://img.blog.csdn.net/20160111133710507)
+
+# 定性评价
+![image](http://img.blog.csdn.net/20160111134007509)
+GPU1上的核大多数颜色不明确，而GPU2上的核大多数颜色明确
+
+![image](http://img.blog.csdn.net/20160111134103872)
+（左图）八个ILSVRC-2010测试图像，以及被我们的模型认为最有可能的五个标签。正确的标签写在每个图像下面，正确标签的概率也以红色条予以显示（若它在前5之内）。（右图）第一列是五个ILSVRC-2010测试图像。其余列显示了六个训练图像，它们在最后的隐层产生的特征向量与测试图像的特征向量有最小的欧氏距离。
