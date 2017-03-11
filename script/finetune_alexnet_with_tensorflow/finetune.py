@@ -59,7 +59,7 @@ model = AlexNet(x, keep_prob, num_classes, train_layers)
 score = model.fc8
 
 # List of trainable variables of the layers we want to train
-var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers]
+var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers] #获取参数只要需要训练的参数
 
 # Op for calculating the loss
 with tf.name_scope("cross_ent"):
@@ -68,8 +68,8 @@ with tf.name_scope("cross_ent"):
 # Train op
 with tf.name_scope("train"):
   # Get gradients of all trainable variables
-  gradients = tf.gradients(loss, var_list)
-  gradients = list(zip(gradients, var_list))
+  gradients = tf.gradients(loss, var_list) #导数
+  gradients = list(zip(gradients, var_list)) 
   
   # Create optimizer and apply gradient descent to the trainable variables
   optimizer = tf.train.GradientDescentOptimizer(learning_rate)
