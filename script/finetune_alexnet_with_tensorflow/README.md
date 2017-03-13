@@ -19,7 +19,7 @@ image_process.py :
 - arg3 用于训练的比例 剩下的交叉验证
 
 - Usage:
-python ../../data/dogvscat/train ../../data/dogvscat 0.8
+python image_process.py ../../data/dogvscat/train ../../data/dogvscat 0.8
 
 train.txt 例子：
 ```
