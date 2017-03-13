@@ -23,12 +23,9 @@ python ../../data/dogvscat/train ../../data/dogvscat 0.8
 
 train.txt 例子：
 ```
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.0.jpg 0
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.1.jpg 0
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10.jpg 0
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.100.jpg 0
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.1000.jpg 0
-/home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10000.jpg 0
+/data/home/zhangbowen/clz/tensorlearn/data/dogvscat/train/dog.9528.jpg 1
+/data/home/zhangbowen/clz/tensorlearn/data/dogvscat/train/cat.9138.jpg 0
+/data/home/zhangbowen/clz/tensorlearn/data/dogvscat/train/cat.2848.jpg 0
 ```
 
 ### 2.finetune 
