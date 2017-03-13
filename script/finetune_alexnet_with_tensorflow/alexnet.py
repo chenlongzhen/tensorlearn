@@ -140,14 +140,18 @@ def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
     # In the cases of multiple groups, split inputs & weights and
     else:
       # Split input and weights and convolve them separately
-      #input_groups = tf.split(axis = 3, num_or_size_splits=groups, value=x)
-      #weight_groups = tf.split(axis = 3, num_or_size_splits=groups, value=weights)
-      input_groups = tf.split(3, groups,x)
-      weight_groups = tf.split(3, groups, weights)
+      # python3
+      input_groups = tf.split(axis = 3, num_or_size_splits=groups, value=x)
+      weight_groups = tf.split(axis = 3, num_or_size_splits=groups, value=weights)
+      # python2
+      #input_groups = tf.split(3, groups,x)
+      #weight_groups = tf.split(3, groups, weights)
       output_groups = [convolve(i, k) for i,k in zip(input_groups, weight_groups)]
       
       # Concat the convolved output together again
-      conv = tf.concat(concat_dim = 3, values = output_groups)
+      conv = tf.concat(axis = 3, values = output_groups)
+      # python 2
+      # conv = tf.concat(concat_dim = 3, values = output_groups)
       
     # Add biases 
     bias = tf.reshape(tf.nn.bias_add(conv, biases), conv.get_shape().as_list())

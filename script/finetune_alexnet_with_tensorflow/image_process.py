@@ -1,7 +1,8 @@
 #encoding=utf-8
 # author :clz
 # 生成训练路径和标签
-# usage :python ../../data/dogvscat/train ../../data/dogvscat 0.8
+# usage :
+#python image_process.py ../../data/dogvscat/train ../../data/dogvscat 0.8
 import sys,glob
 import numpy as np
 import random,os 
