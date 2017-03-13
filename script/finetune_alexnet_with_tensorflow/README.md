@@ -12,7 +12,8 @@ alexnet.py | net 核心代码
 finetune | finetune 代码
 
 ## 使用
-1. image_process.py : 
+### 1.生成图片路径和label
+image_process.py : 
 - arg1 是训练图片位置 
 - arg2 是tain.txt 和 val.txt 存放路径
 - arg3 用于训练的比例 剩下的交叉验证
@@ -30,7 +31,8 @@ train.txt 例子：
 /home/julyedu_51217/tensorlearn/data/dogvscat/train/cat.10000.jpg 0
 ```
 
-2. finetune.py
+### 2.finetune 
+finetune.py
 设置：
 ```
 # Path to the textfiles for the trainings and validation set
@@ -54,7 +56,7 @@ display_step = 1
 filewriter_path = "../../data/checkpoint" 
 checkpoint_path = "../../data/filewriter"
 ```
-3. tensorboard
+### 3. tensorboard
 
 运行 python finetune.py 会有提示
 ![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/569DBE3C3157405A9FFA564C74D4EA0E/6071)
@@ -64,6 +66,7 @@ tensorboard --logdir ../../data/checkpoint --port 8080
 ```
 访问对应ip：port 就会有如下界面
 ![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/581A6257FC2B40A890BFF4B643D9F03E/6078)
+
 ## TODO
 - conf 设置参数
 - fc训练后的前向网络
