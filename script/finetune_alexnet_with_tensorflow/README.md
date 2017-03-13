@@ -58,7 +58,6 @@ checkpoint_path = "../../data/filewriter"
 运行 python finetune.py 会有提示
 ![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/569DBE3C3157405A9FFA564C74D4EA0E/6071)
 ```
-cd path/to/logdir
 tensorboard --logdir ../../data/checkpoint --port 8080
 ```
 访问对应ip：port 就会有如下界面
