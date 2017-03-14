@@ -13,6 +13,7 @@ Author: Frederik Kratzert
 contact: f.kratzert(at)gmail.com
 """
 import os
+import time
 import numpy as np
 import tensorflow as tf
 from datetime import datetime
@@ -176,6 +177,7 @@ with tf.Session() as sess:
 
         while step < train_batches_per_epoch:
 
+            start_time = time.time()
             # Get a batch of images and labels
             batch_xs, batch_ys = train_generator.next_batch(batch_size)
 
@@ -185,6 +187,7 @@ with tf.Session() as sess:
                 feed_dict={x: batch_xs,
                            y: batch_ys,
                            keep_prob: dropout_rate})
+            duration = time.time() - start_time
 
             # Generate summary with the current batch of data and write to file
             if step % display_step == 0:
@@ -196,7 +199,7 @@ with tf.Session() as sess:
                 writer.add_summary(s, epoch * train_batches_per_epoch + step)
             # print
             if step % 10 == 0:
-                print("[INFO] {} pics has trained.".format(step*batch_size))
+                print("[INFO] {} pics has trained. time using {}".format(step*batch_size,duration))
 
             step += 1
 
