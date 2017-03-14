@@ -194,6 +194,9 @@ with tf.Session() as sess:
                                y: batch_ys,
                                keep_prob: 1.})
                 writer.add_summary(s, epoch * train_batches_per_epoch + step)
+            # print
+            if step % 10 == 0:
+                print("[INFO] {} pics has trained.".format(step*batch_size))
 
             step += 1
 
