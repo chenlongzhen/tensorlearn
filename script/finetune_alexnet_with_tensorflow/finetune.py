@@ -1,3 +1,4 @@
+#encoding=utf-8
 """
 With this script you can finetune AlexNet as provided in the alexnet.py
 class on any given dataset. 
@@ -17,30 +18,65 @@ import tensorflow as tf
 from datetime import datetime
 from alexnet import AlexNet
 from datagenerator import ImageDataGenerator
+import argparse
 """
 Configuration settings
 """
 
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-tf','--train_file',action='store',type=str,
+		default='../../data/dogvscat/train.txt',help='train file')
+parser.add_argument('-vf','--val_file',action='store',type=str,
+		default='../../data/dogvscat/val.txt',help='validation file')
+parser.add_argument('-lr','--learning_rate',action='store',type=float,
+		default=0.01,help='learning_rate file')
+parser.add_argument('-ne','--num_epochs',action='store',type=int,
+		default=10,help='num_epochs')
+parser.add_argument('-bs','--batch_size',action='store',type=int,
+		default=128,help='batch size')
+parser.add_argument('-dr','--dropout_rate',action='store',type=float,
+		default=0.5,help='dropout rate')
+parser.add_argument('-nc','--num_classes',action='store',type=int,
+		default=2,help='num classes')
+parser.add_argument('-tl','--train_layers',nargs='+',action='store',type=str,
+		default=['fc8','fc7'],help='dropout rate')
+parser.add_argument('-ds','--display_step',action='store',type=int,
+		default=1,help='display_step')
+parser.add_argument('-fp','--filewriter_path',action='store',type=str,
+		default='../../data/filewriter',help='filewriter_path')
+parser.add_argument('-cp','--checkpoint_path',action='store',type=str,
+		default='../../data/checkpoint',help='checkpoint_path')
+
+args = parser.parse_args()
+print("="*50)
+print("[INFO] args:\r")
+print(args)
+print("="*50)
+
 # Path to the textfiles for the trainings and validation set
-train_file = '../../data/dogvscat/train.txt'
-val_file = '../../data/dogvscat/val.txt'
+train_file = args.train_file
+val_file = args.val_file
 
 # Learning params
-learning_rate = 0.01
-num_epochs = 10
-batch_size = 128
+learning_rate = args.learning_rate
+num_epochs = args.num_epochs
+batch_size = args.batch_size
 
 # Network params
-dropout_rate = 0.5
-num_classes = 2
-train_layers = ['fc8', 'fc7']
+dropout_rate = args.dropout_rate
+num_classes = args.num_classes
+#train_layers = ['fc8', 'fc7']
+train_layers = args.train_layers
 
 # How often we want to write the tf.summary data to disk
-display_step = 1
+display_step = args.display_step
 
 # Path for tf.summary.FileWriter and to store model checkpoints
-filewriter_path = "../../data/checkpoint"
-checkpoint_path = "../../data/filewriter"
+filewriter_path = args.filewriter_path
+checkpoint_path = args.checkpoint_path
+
+
+# argpars finished ==================================================
 
 # Create parent path if it doesn't exist
 if not os.path.isdir(checkpoint_path): os.mkdir(checkpoint_path)
