@@ -145,7 +145,7 @@ def conv(x,
             shape=[
                 filter_height, filter_width, input_channels / groups,
                 num_filters
-            ])
+            ])# heith width in_channel out_channel
         biases = tf.get_variable('biases', shape=[num_filters])
 
         if groups == 1:
