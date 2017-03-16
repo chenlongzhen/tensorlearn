@@ -1,5 +1,7 @@
+#encoding=utf-8
 import numpy as np
 import cv2
+
 """
 This code is highly influenced by the implementation of:
 https://github.com/joelthchao/tensorflow-finetune-flickr-style/dataset.py
