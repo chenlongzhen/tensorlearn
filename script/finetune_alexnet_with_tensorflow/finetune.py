@@ -40,7 +40,7 @@ parser.add_argument('-dr','--dropout_rate',action='store',type=float,
 parser.add_argument('-nc','--num_classes',action='store',type=int,
 		default=2,help='num classes')
 parser.add_argument('-tl','--train_layers',nargs='+',action='store',type=str,
-		default=['fc8','fc7'],help='dropout rate')
+		default=['fc8','fc7'],help='train layers')
 parser.add_argument('-ds','--display_step',action='store',type=int,
 		default=1,help='display_step')
 parser.add_argument('-fp','--filewriter_path',action='store',type=str,
@@ -49,6 +49,10 @@ parser.add_argument('-cp','--checkpoint_path',action='store',type=str,
 		default='../../data/checkpoint',help='checkpoint_path')
 parser.add_argument('-tn','--top_N',action='store',type=int,
 		default=5,help='whether the targets are in the top K predictions.')
+parser.add_argument('-rc','--restore_checkpoint',action='store',type=str,
+        default='',help='use restore mode to initialize weights.\nex: python finetune.py -rc ../../data/checkpoint/model_epoch1.ckpt')
+
+
 
 args = parser.parse_args()
 print("="*50)
@@ -80,6 +84,9 @@ checkpoint_path = args.checkpoint_path
 
 #whether the targets are in the top K predictions.
 top_N = args.top_N
+
+#restore checkpoint
+restore_checkpoint = args.restore_checkpoint
 
 
 # argpars finished ==================================================
@@ -173,7 +180,11 @@ with tf.Session() as sess:
     writer.add_graph(sess.graph)
 
     # Load the pretrained weights into the non-trainable layer
-    model.load_initial_weights(sess)
+    # if restore_checkponit is '' use ariginal weights, else use checkponit
+    if restore_checkpoint == '':
+        model.load_initial_weights(sess)
+    else:
+        saver.restore(sess, restore_checkpoint)
 
     print("{} Start training...".format(datetime.now()))
     print("{} Open Tensorboard at --logdir {}".format(datetime.now(),
