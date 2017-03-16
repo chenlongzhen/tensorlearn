@@ -47,6 +47,8 @@ parser.add_argument('-fp','--filewriter_path',action='store',type=str,
 		default='../../data/filewriter',help='filewriter_path')
 parser.add_argument('-cp','--checkpoint_path',action='store',type=str,
 		default='../../data/checkpoint',help='checkpoint_path')
+parser.add_argument('-tn','--top_N',action='store',type=int,
+		default=5,help='whether the targets are in the top K predictions.')
 
 args = parser.parse_args()
 print("="*50)
@@ -75,6 +77,9 @@ display_step = args.display_step
 # Path for tf.summary.FileWriter and to store model checkpoints
 filewriter_path = args.filewriter_path
 checkpoint_path = args.checkpoint_path
+
+#whether the targets are in the top K predictions.
+top_N = args.top_N
 
 
 # argpars finished ==================================================
@@ -126,8 +131,14 @@ tf.summary.scalar('cross_entropy', loss)
 
 # Evaluation op: Accuracy of the model
 with tf.name_scope("accuracy"):
-    correct_pred = tf.equal(tf.argmax(score, 1), tf.argmax(y, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+    # top 1 accuracy
+    # correct_pred = tf.equal(tf.argmax(score, 1), tf.argmax(y, 1))
+    # accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+    # TODO top k accuracy
+    labels = tf.argmax(y, 1) # get real label
+    topFiver = tf.nn.in_top_k(score, labels, top_N) # check if top N is in real label or not
+    accuracy = tf.reduce_mean(tf.cast(topFiver, tf.float32))
 
 # Add the accuracy to the summary
 tf.summary.scalar('accuracy', accuracy)
