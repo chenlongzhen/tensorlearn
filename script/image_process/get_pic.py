@@ -19,6 +19,7 @@ if not os.path.isdir(base_dir):os.mkdir(base_dir)
 if not os.path.isdir(pic_path_abs):os.mkdir(pic_path_abs)
 
 series_col=1
+
 pic_col=3
 
 with open(input_file,'r') as rfile,open(output_file_train,'w') as trainfile,open(output_file_test,'w') as testfile:
@@ -39,7 +40,7 @@ with open(input_file,'r') as rfile,open(output_file_train,'w') as trainfile,open
             continue 
         try:
             print("{}\tdownloading...".format(pic_url))
-            save_path= DATA_PATH + "/" +pic_path + "/"+str(count)+tail
+            save_path= DATA_PATH + "/" +pic_path + "/"+ serie+"."+str(count)+tail
             print("save:" +save_path)
             urllib.request.urlretrieve(pic_url,save_path)
             if random.random() <= ratio:
