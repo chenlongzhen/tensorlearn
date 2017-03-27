@@ -2,3 +2,6 @@ __pycache__
 o
 *.out
 *.npy
+*pyc
+*swp
+*h5

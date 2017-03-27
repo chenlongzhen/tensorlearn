@@ -23,8 +23,7 @@ data/
             ...
         cats/
             cat001.jpg
-            cat002.jpg
-            ...
+            cat002.jpg ...
     validation/
         dogs/
             dog001.jpg
@@ -55,7 +54,9 @@ validation_data_dir = DATA_PATH + '/test'
 nb_train_samples = 22780 
 nb_validation_samples = 2224
 epochs = 50
-batch_size = 128
+batch_size = 64
+
+top_model_weights_path = "./first_try.h5"
 
 #######################
 # fix samples number
