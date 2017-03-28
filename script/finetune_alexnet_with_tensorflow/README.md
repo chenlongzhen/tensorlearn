@@ -56,19 +56,19 @@ checkpoint_path = "../../data/filewriter"
 ### 3. tensorboard
 
 运行 python finetune.py 会有提示
-![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/569DBE3C3157405A9FFA564C74D4EA0E/6071)
+![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/logdir.png)
 ```
 tensorboard --logdir ../../data/checkpoint --port 8080
 ```
 访问对应ip：port 就会有如下界面
-![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/581A6257FC2B40A890BFF4B643D9F03E/6078)
+![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/tensorboard.png)
 
 ## TODO
 - conf 设置参数
 - fc训练后的前向网络
 
 # ALEX的结构
-![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/294B3ABD61F64A15A9F3C40607B14516/5969)
+![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/alex.png)
 
 共8层，5层convolutional，3层full connected
 ```
