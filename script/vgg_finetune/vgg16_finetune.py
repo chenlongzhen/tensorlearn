@@ -52,7 +52,7 @@ parser.add_argument('-dp','--data_path',action='store',type=str,
 parser.add_argument('-lr','--learning_rate',action='store',type=float,
         default=0.0001,help='learning_rate')
 parser.add_argument('-mt','--momentum',action='store',type=float,
-        default=0.0001,help='learning_rate')
+        default=0.9,help='learning_rate')
 parser.add_argument('-ne','--num_epochs',action='store',type=int,
         default=50,help='num_epochs')
 parser.add_argument('-bs','--batch_size',action='store',type=int,
