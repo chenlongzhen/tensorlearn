@@ -49,6 +49,7 @@ data/
 ![image](https://github.com/chenlongzhen/tensorlearn/raw/master/pic/vgg.png)
 
 # Alex的结构
+
 ![image](https://github.com/chenlongzhen/tensorlearn/raw/master/pic/lalex_vsvgg.png)
 
 # 经过每一层图片的变化
