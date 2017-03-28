@@ -56,19 +56,19 @@ checkpoint_path = "../../data/filewriter"
 ### 3. tensorboard
 
 运行 python finetune.py 会有提示
-![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/logdir.png)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/logdir.png)
 ```
 tensorboard --logdir ../../data/checkpoint --port 8080
 ```
 访问对应ip：port 就会有如下界面
-![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/tensorboard.png)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/tensorboard.png)
 
 ## TODO
 - conf 设置参数
 - fc训练后的前向网络
 
 # ALEX的结构
-![image](https://github.com/chenlongzhen/tensorlearn/tree/master/pic/alex.png)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/alex.png)
 
 共8层，5层convolutional，3层full connected
 ```
@@ -100,7 +100,7 @@ tensorboard --logdir ../../data/checkpoint --port 8080
 
 图解
 
-![image](http://note.youdao.com/yws/public/resource/3e293ea1c91e01ebeeb92ac3d0552d34/xmlnote/B6D634603BB447B98227F12F4D913B10/6049)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/lrn.png)
 
 **比较**：响应归一化将我们的top-1与top-5误差率分别减少了1.4%与1.2%。我们也验证了该方案在CIFAR-10数据集上的有效性：四层CNN不带归一化时的测试误差率是13%，带归一化时是11%
 
