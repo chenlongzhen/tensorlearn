@@ -35,8 +35,11 @@ import numpy as np
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
+from keras.models import save_model
+from keras.models import load_model
 from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense
+from keras.callbacks import TensorBoard
 from keras import applications
 from keras.utils import plot_model
 import sys
@@ -54,7 +57,7 @@ parser.add_argument('-lr','--learning_rate',action='store',type=float,
 parser.add_argument('-mt','--momentum',action='store',type=float,
         default=0.9,help='learning_rate')
 parser.add_argument('-ne','--num_epochs',action='store',type=int,
-        default=50,help='num_epochs')
+        default=3,help='num_epochs')
 parser.add_argument('-bs','--batch_size',action='store',type=int,
         default=128,help='batch size')
 parser.add_argument('-nc','--num_classes',action='store',type=int,
@@ -154,9 +157,19 @@ validation_generator = validation_datagen.flow_from_directory(directory=validati
                                                               batch_size=batch_size,
                                                               class_mode='binary')
 
+# tensor board
+tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0,  
+                  write_graph=True, write_images=True)
+#* tensorboard --logdir path_to_current_dir/Graph --port 8080 
+print("tensorboard --logdir ./Graph --port 8080")
+
 # begin to fit 
 model.fit_generator(train_generator,
-                    steps_per_epoch=200,
+                    steps_per_epoch=128,
                     epochs=epochs,
                     validation_data=validation_generator,
-                    validation_steps=16);
+                    validation_steps=16,
+                    callbacks=[tbCallBack]);
+
+model.save_weights('./weights/vgg_finetune_{}.h5'.format(epochs))
+save_model(model,'./model/vgg_finetune_{}.h5'.format(epochs))
