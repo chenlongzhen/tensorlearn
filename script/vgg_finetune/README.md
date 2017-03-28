@@ -46,14 +46,13 @@ data/
 
 
 # vgg 结构
-![image](http://note.youdao.com/yws/public/resource/696b244f911b9707b9a3e70050d34cad/xmlnote/31E24F1F40B04F109DD9F5535C25432E/6369)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/vgg.png)
 
 # Alex的结构
-![image](http://note.youdao.com/yws/public/resource/696b244f911b9707b9a3e70050d34cad/xmlnote/C437476CB1094793A80C71DDE8D20FCA/6372)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/lalex.png)
 
 # 经过每一层图片的变化
-
-![image](http://note.youdao.com/yws/public/resource/696b244f911b9707b9a3e70050d34cad/xmlnote/74A2C350DC9843B5ACCD563F1DE6AE4D/6374)
+![image](https://github.com/chenlongzhen/tensorlearn/blob/master/pic/bianhua.png)
 
 # reference
 [1]. https://jacobgil.github.io/deeplearning/filter-visualizations
