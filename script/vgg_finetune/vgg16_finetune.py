@@ -32,14 +32,14 @@ data/
 '''
 #encoding=utf-8
 import numpy as np
-from keras.optimizers import SGD
+from keras.optimizers import SGD,Adagrad,RMSprop
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
 from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard,EarlyStopping,CSVLogger
 from keras import applications
 from keras.utils import plot_model
 import sys
@@ -57,17 +57,19 @@ parser.add_argument('-lr','--learning_rate',action='store',type=float,
 parser.add_argument('-mt','--momentum',action='store',type=float,
         default=0.9,help='learning_rate')
 parser.add_argument('-ne','--num_epochs',action='store',type=int,
-        default=3,help='num_epochs')
+        default=10,help='num_epochs')
 parser.add_argument('-bs','--batch_size',action='store',type=int,
         default=128,help='batch size')
 parser.add_argument('-nc','--num_classes',action='store',type=int,
         default=2,help='num classes')   # no use now
 parser.add_argument('-tl','--train_layers',nargs='+',action='store',type=str,
-        default=['fc1','fc2','logit'],help='layers need to be trained.')
+        default=['logit'],help='layers need to be trained.')
 parser.add_argument('-tn','--top_N',action='store',type=int,
         default=5,help='whether the targets are in the top K predictions.')
 parser.add_argument('-rc','--restore_checkpoint',action='store',type=str,
         default='',help='use restore mode to initialize weights.\nex: python finetune.py -rc ../../data/checkpoint/model_epoch1.ckpt')
+parser.add_argument('-um','--use_model',action='store',type=str,
+        default='',help='use model to initial.')
 
 args = parser.parse_args()
 print("="*50)
@@ -85,6 +87,8 @@ train_layers = args.train_layers
 
 learning_rate  = args.learning_rate
 momentum = args.momentum
+
+use_model = args.use_model
 
 
 def preprocess_input_vgg(x):
@@ -111,20 +115,37 @@ def preprocess_input_vgg(x):
     return X[0]
 
 
-# vgg16 
-vgg16 = VGG16(weights='imagenet')
+if use_model == '':
+    print("*" * 50)
+    print('[INFO] init train mode')
+    print("*" * 50)
+    # vgg16 
+    vgg16 = VGG16(weights='imagenet')
+    
+    # ** get vgg top layer then add a logit layer for classification **
+    fc2 = vgg16.get_layer('fc2').output
+    prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(fc2)
 
-# ** get vgg top layer then add a logit layer for classification **
-fc2 = vgg16.get_layer('fc2').output
-prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(fc2)
-model = Model(input=vgg16.input, output=prediction)
+## other bad method :)
+#    flatten = vgg16.get_layer('flatten').output
+#    fc1 = Dense(256, activation='relu',name='fc1')(flatten)
+#    dropout = Dropout(0.5)(fc1)
+#    prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(dropout)
+
+    model = Model(input=vgg16.input, output=prediction)
+else:
+    print("*" * 50)
+    print('[INFO] continue train mode')
+    print("*" * 50)
+    model = load_model(use_model)
 
 # which layer will be trained 
 for layer in model.layers:
     #if layer.name in ['fc1', 'fc2', 'logit']:
     if layer.name in train_layers:
-        continue
-    layer.trainable = False
+        layer.trainable = True
+    else:
+        layer.trainable = False
 
 # model summary and structure pic.
 model.summary()
@@ -133,15 +154,20 @@ model.summary()
 
 # compile
 sgd = SGD(lr=learning_rate, momentum=0.9)
-model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
+adagrad = Adagrad(lr=0.01, epsilon=1e-06)
+rms = RMSprop(lr=1e-4, rho=0.9, epsilon=1e-06)
+#model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy','binary_crossentropy'])
+model.compile(optimizer=adagrad, loss='binary_crossentropy', metrics=['accuracy','binary_crossentropy'])
 
 # data generation
 train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_vgg,
+                                   
                                    rotation_range=40,
                                    width_shift_range=0.2,
                                    height_shift_range=0.2,
                                    shear_range=0.2,
                                    zoom_range=0.2,
+                                  # rescale =1.0/255,
                                    horizontal_flip=True,
                                    fill_mode='nearest')
 
@@ -150,7 +176,9 @@ train_generator = train_datagen.flow_from_directory(directory=train_data_dir,
                                                     batch_size=batch_size,
                                                     class_mode='binary')
 
-validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_vgg)
+validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_vgg,
+                                #        rescale =1.0/255
+                                    )
 
 validation_generator = validation_datagen.flow_from_directory(directory=validation_data_dir,
                                                               target_size=[224, 224],
@@ -158,18 +186,25 @@ validation_generator = validation_datagen.flow_from_directory(directory=validati
                                                               class_mode='binary')
 
 # tensor board
-tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0,  
+tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=1,  
                   write_graph=True, write_images=True)
 #* tensorboard --logdir path_to_current_dir/Graph --port 8080 
 print("tensorboard --logdir ./Graph --port 8080")
 
+
+# earlystoping
+ES = EarlyStopping(monitor='val_loss', patience=3, verbose=0, mode='auto')
+
+# csv log
+csvlog = CSVLogger('./log/training.csv', separator=',', append=True)
+
 # begin to fit 
 model.fit_generator(train_generator,
-                    steps_per_epoch=128,
+                    steps_per_epoch=100,
                     epochs=epochs,
                     validation_data=validation_generator,
-                    validation_steps=16,
-                    callbacks=[tbCallBack]);
+                    validation_steps=50,
+                    callbacks=[tbCallBack,ES,csvlog]);
 
 model.save_weights('./weights/vgg_finetune_{}.h5'.format(epochs))
 save_model(model,'./model/vgg_finetune_{}.h5'.format(epochs))

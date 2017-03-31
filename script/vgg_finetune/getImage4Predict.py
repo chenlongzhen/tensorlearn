@@ -21,6 +21,59 @@ try:
 except ImportError:
     pil_image = None
 
+def standardize(x,
+             rescale=None, 
+            featurewise_center=None, 
+            featurewise_std_normalization = None, 
+            preprocessing_function= None,
+            zca_whitening = None,
+            channel_axis = 3):
+        """Apply the normalization configuration to a batch of inputs.
+        # Arguments
+            x: batch of inputs to be normalized.
+        # Returns
+            The inputs, normalized.
+        """
+
+        if preprocessing_function:
+            x = preprocessing_function(x)
+        if rescale:
+            x *= rescale
+
+        # x is a single image, so it doesn't have image number at index 0
+        img_channel_axis = channel_axis - 1
+        if samplewise_center:
+            x -= np.mean(x, axis=img_channel_axis, keepdims=True)
+        if samplewise_std_normalization:
+            x /= (np.std(x, axis=img_channel_axis, keepdims=True) + 1e-7)
+
+        if featurewise_center:
+            if mean is not None:
+                x -= mean
+          else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`featurewise_center`, but it hasn\'t'
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
+        if featurewise_std_normalization:
+            if std is not None:
+                x /= (std + 1e-7)
+            else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`featurewise_std_normalization`, but it hasn\'t'
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
+        if zca_whitening:
+            if principal_components is not None:
+                flatx = np.reshape(x, (x.size))
+                whitex = np.dot(flatx, principal_components)
+                x = np.reshape(whitex, (x.shape[0], x.shape[1], x.shape[2]))
+            else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`zca_whitening`, but it hasn\'t'
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
+        return x
 
 
 def array_to_img(x, data_format=None, scale=True):
@@ -144,6 +197,7 @@ def list_pictures(directory, ext='jpg|jpeg|bmp|png'):
     return [os.path.join(root, f)
             for root, _, files in os.walk(directory) for f in files]
             #if re.match(r'([\w]+\.(?:' + ext + '))', f)]
+
 
 def getPics(floder,target_size=(224,224)):
     '''
