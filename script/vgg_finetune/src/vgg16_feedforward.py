@@ -13,6 +13,7 @@ import getImage4Predict
 
 model_path = sys.argv[1]
 pic_path = sys.argv[2]
+out_fix_name = sys.argv[3]
 # load model
 model = load_model(model_path)
 
@@ -33,18 +34,21 @@ model = load_model(model_path)
 #print(im.shape)
 
 
-def save(files,out,path='output/out.csv'):
+def save(files,out,path='output/out{}.csv'.format(out_fix_name)):
     with open(path,'w') as inf:
         for filename,out in zip(files,out):
             print("{},{}".format(filename,out[0]))
             inf.write("{},{}\n".format(filename,out[0]))
 
+print("[INFO] BEGIN TO READ>>>")
 files,ims = getImage4Predict.getPics(pic_path)
 print("datashape:{}".format(ims.shape))
 
 # out
+print("[INFO] BEGIN TO PREDICT>>>")
 out = model.predict(ims)
 print("files:{}".format(files))
 print("inference:{}".format(out))
 
 save(files,out)
+#python vgg16_feedforward.py model/vgg_dog_cat_v1.h5 ./testPic/test/  v1

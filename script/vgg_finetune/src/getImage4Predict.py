@@ -13,6 +13,7 @@ from six.moves import range
 import os
 import threading
 import warnings
+from keras.applications.imagenet_utils import preprocess_input
 
 from keras import backend as K
 
@@ -50,7 +51,7 @@ def standardize(x,
         if featurewise_center:
             if mean is not None:
                 x -= mean
-          else:
+            else:
                 warnings.warn('This ImageDataGenerator specifies '
                               '`featurewise_center`, but it hasn\'t'
                               'been fit on any training data. Fit it '
@@ -149,6 +150,7 @@ def img_to_array(img, data_format=None):
     # but original PIL image has format (width, height, channel)
     x = np.asarray(img, dtype=K.floatx())
     if len(x.shape) == 3:
+        #print("[INFO] channel:{}".format(data_format))
         if data_format == 'channels_first':
             x = x.transpose(2, 0, 1)
     elif len(x.shape) == 2:
@@ -207,16 +209,19 @@ def getPics(floder,target_size=(224,224)):
 
     # get pic path
     picPaths = list_pictures(floder)
+    #print(picPaths)
 
     # read
     picTensor = np.zeros((len(picPaths),) + target_size + (3,), dtype=K.floatx())
     for ind,path in enumerate(picPaths):
         img = load_img(path=path, target_size = target_size)
-        arrImg  = img_to_array(img)
-        
         picTensor[ind] = img_to_array(img)
 
-    return picPaths,picTensor
+    # process by keras preprocession   RGB->BGR   -=mean !!!
+    picTensor2 = picTensor.copy()
+    picTensor_change =  preprocess_input(picTensor2)
+
+    return picPaths,picTensor_change
 
 
 if __name__ == "__main__":
