@@ -33,6 +33,7 @@ data/
 #encoding=utf-8
 import numpy as np
 from keras.optimizers import SGD,Adagrad,RMSprop
+from keras import regularizers
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.models import save_model
@@ -45,6 +46,7 @@ from keras.utils import plot_model
 import sys
 import os
 from  vgg16 import VGG16
+from  myConv import myConv
 import argparse
 
 
@@ -116,7 +118,7 @@ parser.add_argument('-bs','--batch_size',action='store',type=int,
 parser.add_argument('-nc','--num_classes',action='store',type=int,
         default=2,help='num classes')   # no use now
 parser.add_argument('-tl','--train_layers',nargs='+',action='store',type=str,
-        default=['logit'],help='layers need to be trained.')
+        default=['logit','linear'],help='layers need to be trained.')
 # TODO
 parser.add_argument('-tn','--top_N',action='store',type=int,
         default=5,help='whether the targets are in the top K predictions.')
@@ -175,7 +177,7 @@ END_MODEL = DATA_PATH + '/endModel/model_{}.h5'.format(model_name)
 mkdir(os.path.dirname(END_MODEL))
 
 
-if use_model == '':
+if use_model == '' :
     print("*" * 50)
     print('[INFO] init train mode')
     print("*" * 50)
@@ -187,13 +189,40 @@ if use_model == '':
     fc2 = vgg16.get_layer('fc2').output
     prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(fc2)
 
-##   other bad method :)
+##   bad method :)
 #    flatten = vgg16.get_layer('flatten').output
 #    fc1 = Dense(256, activation='relu',name='fc1')(flatten)
 #    dropout = Dropout(0.5)(fc1)
+#    fc2 = Dense(256, activation='relu',name='fc2')(dropout)
+#    dropout = Dropout(0.5)(fc2)
 #    prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(dropout)
 
     model = Model(input=vgg16.input, output=prediction)
+
+elif use_model == 'svm':
+    #svm classification
+    print("*" * 50)
+    print('[INFO] use {} train mode'.format(use_model))
+    print("*" * 50)
+
+    # vgg16 
+    vgg16 = VGG16(weights='imagenet')
+    
+    # ** get vgg top layer then add a logit layer for classification **
+    fc2 = vgg16.get_layer('fc2').output
+    prediction = Dense(output_dim=1, activation='linear', name='linear',kernel_regularizer=regularizers.l2(0.01))(fc2)
+    model = Model(input=vgg16.input, output=prediction)
+
+
+elif use_model == 'myConv':
+    print("*" * 50)
+    print('[INFO] use {} train mode'.format(use_model))
+    print("*" * 50)
+    model = myConv()
+#    print("load weight")
+#    model.load_weights("../data/endWeights/weight_v7.h5")
+
+
 else:
     print("*" * 50)
     print('[INFO] continue train mode')
@@ -205,13 +234,13 @@ else:
 ##############################
 # which layer will be trained 
 ##############################
-
-for layer in model.layers:
-    #if layer.name in ['fc1', 'fc2', 'logit']:
-    if layer.name in train_layers:
-        layer.trainable = True
-    else:
-        layer.trainable = False
+if use_model != 'myConv':
+    for layer in model.layers:
+        #if layer.name in ['fc1', 'fc2', 'logit']:
+        if layer.name in train_layers :
+            layer.trainable = True
+        else:
+            layer.trainable = False
 
 # model summary and structure pic.
 model.summary()
@@ -225,12 +254,22 @@ model.summary()
 # compile
 ##############################
 
-# sgd = SGD(lr=learning_rate, momentum=0.9)
-# rms = RMSprop(lr=1e-4, rho=0.9, epsilon=1e-06)
 
+# SGD version
+
+#rms = RMSprop(lr=1e-4, rho=0.9, epsilon=1e-06)
+#lrrate = 4.e-4
+#decay = lrrate / epochs
+#sgd = SGD(lr=lrrate, momentum=0.9, decay=decay, nesterov=False)
+#model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
+
+# adagrad version
 adagrad = Adagrad(lr=learning_rate, epsilon=1e-06)
-
 model.compile(optimizer=adagrad, loss='binary_crossentropy', metrics=['accuracy'])
+
+# svm version
+# model.compile(loss='hinge',optimizer='adadelta',metrics=['accuracy','binary_crossentropy'])
+
 
 
 ##############################
@@ -238,7 +277,7 @@ model.compile(optimizer=adagrad, loss='binary_crossentropy', metrics=['accuracy'
 ##############################
 
 train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input_vgg,
-                                   rotation_range=40,
+                                   rotation_range=20,
                                    width_shift_range=0.2,
                                    height_shift_range=0.2,
                                    shear_range=0.2,
@@ -273,7 +312,7 @@ print("tensorboard --logdir {} --port 8080".format(TENSORBOARD_PATH))
 
 
 # earlystoping
-ES = EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto')
+# ES = EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto')
 
 # csv log
 csvlog = CSVLogger(LOG_PATH,separator=',', append=True)
@@ -291,7 +330,7 @@ model.fit_generator(train_generator,
                     epochs=epochs,
                     validation_data=validation_generator,
                     validation_steps=validation_steps,
-                    callbacks=[tbCallBack,ES,csvlog,checkpointer]);
+                    callbacks=[tbCallBack,csvlog,checkpointer]);
 
 #################################
 # model
