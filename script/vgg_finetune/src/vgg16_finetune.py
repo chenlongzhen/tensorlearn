@@ -137,7 +137,7 @@ print("[INFO] args:\r")
 print(args)
 print("="*50)
 
-train_data_dir = args.data_path + '/train'
+train_data_dir = args.data_path + '/train_v1' #!!!!!!
 validation_data_dir = args.data_path + '/test'
 
 model_name = args.model_name
@@ -199,7 +199,7 @@ if use_model == '' :
 
     model = Model(input=vgg16.input, output=prediction)
 
-elif use_model == 'svm':
+elif use_model == 'linear':
     #svm classification
     print("*" * 50)
     print('[INFO] use {} train mode'.format(use_model))
@@ -228,7 +228,6 @@ else:
     print('[INFO] continue train mode')
     print("*" * 50)
     model = load_model(use_model)
-
 
 
 ##############################

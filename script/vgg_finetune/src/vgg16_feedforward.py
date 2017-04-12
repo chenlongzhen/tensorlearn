@@ -7,7 +7,7 @@ from PIL import Image
 from keras.models import save_model
 from keras.models import load_model
 import numpy as np
-import sys
+import sys,os
 import glob
 import getImage4Predict
 
@@ -34,14 +34,17 @@ model = load_model(model_path)
 #print(im.shape)
 
 
-def save(files,out,path='output/out{}.csv'.format(out_fix_name)):
+def save(files,out,path='../data/output/out_{}.csv'.format(out_fix_name)):
     with open(path,'w') as inf:
         for filename,out in zip(files,out):
-            print("{},{}".format(filename,out[0]))
-            inf.write("{},{}\n".format(filename,out[0]))
+            
+            name = os.path.basename(filename).split('.')[0] # id get!
+            print("{},{}".format(name,out[0]))
+            inf.write("{},{}\n".format(name,out[0]))
 
 print("[INFO] BEGIN TO READ>>>")
 files,ims = getImage4Predict.getPics(pic_path)
+print(files)
 print("datashape:{}".format(ims.shape))
 
 # out
