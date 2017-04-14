@@ -187,7 +187,8 @@ if use_model == '' :
     
     # ** get vgg top layer then add a logit layer for classification **
     fc2 = vgg16.get_layer('fc2').output
-    prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(fc2)
+    x = Dropout(0.5)(fc2) # add 0413
+    prediction = Dense(output_dim=1, activation='sigmoid', name='logit')(x)
 
 ##   bad method :)
 #    flatten = vgg16.get_layer('flatten').output
@@ -263,8 +264,13 @@ model.summary()
 #model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
 
 # adagrad version
-adagrad = Adagrad(lr=learning_rate, epsilon=1e-06)
-model.compile(optimizer=adagrad, loss='binary_crossentropy', metrics=['accuracy'])
+# adagrad = Adagrad(lr=learning_rate, epsilon=1e-06)
+# model.compile(optimizer=adagrad, loss='binary_crossentropy', metrics=['accuracy'])
+
+# adadelta drop 0.5
+model.compile(optimizer='adadelta',
+                      loss='binary_crossentropy',
+                                    metrics=['accuracy'])
 
 # svm version
 # model.compile(loss='hinge',optimizer='adadelta',metrics=['accuracy','binary_crossentropy'])

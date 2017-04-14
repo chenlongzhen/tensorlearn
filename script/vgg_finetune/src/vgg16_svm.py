@@ -44,7 +44,7 @@ def save(files,out,path='../data/output/out{}.csv'.format(out_fix_name)):
             print(filename)
             print(out)
             name = os.path.basename(filename).split('.')[0] # id get!
-            inf.write("{},{}\n".format(name,out[0]))
+            inf.write("{},{}\n".format(name,out[1])) # get label prob !!
 
 def data2svm(files,out):
     '''
@@ -140,44 +140,45 @@ if __name__=="__main__":
 #    np.save("../data/tmp/trainLabel",trainLabel)
 #    np.save("../data/tmp/testLabel",testLabel)
 
-    # get  data
-    print("[INFO] begin to get true test feature>>>")
+#    # get  data
+#    print("[INFO] begin to get true test feature>>>")
     files,Img,_ = getPic(pic_path,0)
-    print(Img)
-    model = getModel(model_path,'fc2')
-    ImgFeature = predict(model,Img)
-    np.save("../data/tmp/trueTestLabel",ImgFeature)
+#    print(Img)
+#    model = getModel(model_path,'fc2')
+#    ImgFeature = predict(model,Img)
+#    np.save("../data/tmp/trueTestLabel",ImgFeature)
+#
+#    # svc
+#    print("[INFO] begin to load NN feature>>>")
+#    trainFeature = np.load("../data/tmp/trainFea.npy")
+#    testFeature = np.load("../data/tmp/testFea.npy")
+#    trainLabel = np.load("../data/tmp/trainLabel.npy")
+#    testLabel = np.load("../data/tmp/testLabel.npy")
+#    print(trainFeature.shape)
+#
+#    print("[INFO] begin to predict >>>")
+#    svcClf = svc(trainFeature,trainLabel,testFeature,testLabel)
+#
+#    # save
+#    svm_model="../data/model/svm_{}".format(out_fix_name)
+#    with open(svm_model,'wb') as f:
+#        pickle.dump(svcClf,f) #save
+#
+#    # predict test
+#    print("Start predict SVM...")
+#    with open(svm_model,'rb') as f:
+#        svcClf = pickle.load(f) #save
+#    ImgFeature = np.load("../data/tmp/trueTestLabel.npy")
+#    pred_testlabel_v1 = svcClf.predict(ImgFeature)
+#    print(pred_testlabel_v1)
+#    pred_testlabel_v2 = svcClf.predict_proba(ImgFeature)
+#    #pre_prob = [i[0] for i in pred_testlabel_v2]
+#    #print(np.array(pre_prob))
+#
+#    print("Start save SVM...")
+#    np.save("../data/tmp/predict_v1.npy",pred_testlabel_v1)
+#    np.save("../data/tmp/predict_v2.npy",pred_testlabel_v2)
 
-    # svc
-    print("[INFO] begin to load NN feature>>>")
-    trainFeature = np.load("../data/tmp/trainFea.npy")
-    testFeature = np.load("../data/tmp/testFea.npy")
-    trainLabel = np.load("../data/tmp/trainLabel.npy")
-    testLabel = np.load("../data/tmp/testLabel.npy")
-    print(trainFeature.shape)
-
-    print("[INFO] begin to predict >>>")
-    svcClf = svc(trainFeature,trainLabel,testFeature,testLabel)
-
-    # save
-    svm_model="../data/model/svm_{}".format(out_fix_name)
-    with open(svm_model,'wb') as f:
-        pickle.dump(svcClf,f) #save
-
-    # predict test
-    print("Start predict SVM...")
-    with open(svm_model,'rb') as f:
-        svcClf = pickle.load(f) #save
-    ImgFeature = np.load("../data/tmp/trueTestLabel.npy")
-    pred_testlabel_v1 = svcClf.predict(ImgFeature)
-    print(pred_testlabel_v1)
-    pred_testlabel_v2 = svcClf.predict_proba(ImgFeature)
-    #pre_prob = [i[0] for i in pred_testlabel_v2]
-    #print(np.array(pre_prob))
-
-    print("Start save SVM...")
-    np.save("../data/tmp/predict_v1.npy",pred_testlabel_v1)
-    np.save("../data/tmp/predict_v2.npy",pred_testlabel_v2)
-
+    pred_testlabel_v2 = np.load("../data/tmp/predict_v2.npy")
     save(files,pred_testlabel_v2)
 #python vgg16_svm.py ../data/endModel/model_v12.h5 ../data/testPic/test svmtest
