@@ -39,9 +39,9 @@ def write_gap(MODEL, image_size, lambda_func=None):
     print("[INFO] image generator.")
     gen = ImageDataGenerator(preprocessing_function=lambda_func)
     train_generator = gen.flow_from_directory(trainPath, image_size, shuffle=False, 
-                                              batch_size=64) # class_model default is category  
+                                              batch_size=1) # class_model default is category  
     test_generator = gen.flow_from_directory(testPath, image_size, shuffle=False, 
-                                             batch_size=64,
+                                             batch_size=1,
                                              class_mode=None) # no targets get yielded (only input images are yielded).
     print("[INFO] image generator finish.")
 

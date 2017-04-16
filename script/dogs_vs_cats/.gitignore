@@ -5,3 +5,5 @@ test*
 *.png
 pred.csv
 .ipy*
+data
+*.ipynb
