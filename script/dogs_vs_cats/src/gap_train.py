@@ -5,29 +5,64 @@
 
 import h5py
 import sys,os
+
+import logging
 import numpy as np
 from keras.models import save_model
 from sklearn.utils import shuffle
-np.random.seed(2017)
+import yaml
+def myLog(logPath):
+    '''
+    logging
+    :param logPath:  where to save log
+    :return: logging handle
+    '''
 
-S_PATH = sys.path[0]
-DATA_PATH = S_PATH + "/../data/"
+    logging.basicConfig(level=logging.DEBUG,
+                        format='[ %(asctime)s %(filename)s line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S',
+                        filename=logPath,
+                        filemode='w')
 
-gap_ResNet50 = DATA_PATH + "gap_ResNet50.h5"
-gap_Xception = DATA_PATH + "gap_Xception.h5"
-gap_InceptionV3 = DATA_PATH + "gap_InceptionV3.h5"
-END_MODEL = DATA_PATH + "/endModel.h5"
+    #定义一个StreamHandler，将INFO级别或更高的日志信息打印到标准错误，并将其添加到当前的日志处理对象#
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
-test_data = DATA_PATH + "../../vgg_finetune/data/testPic"
+    return logging
 
-submissionPath = DATA_PATH + "/submission.csv"
+
+#################################
+# cofig
+#################################
+CNF = yaml.load(open('../conf/setting.yaml'))
+
+version = CNF['version']
+
+test_path = CNF['test_path']
+
+use_model = CNF['use_model']
+gen_layer = CNF['gen_layer']
+
+log_path = CNF['log_path']
+
+np.random.seed(int(CNF['seed']))
+
+logger = myLog(log_path+"/log_{}".format(version))
+logger.info(CNF)
+
+submissionPath =  "../data/output/submission.csv"
+END_MODEL =  "../data/endModel/endModel_{}.h5".format(version)
 
 X_train = []
 X_test = []
 
 
-for filename in [gap_ResNet50, gap_Xception, gap_InceptionV3]:
-    print("[INFO] begin to read {}".format(os.path.basename(filename)))
+for m in use_model:
+    filename =  "../data/mode/gap_{}_{}.h5".format(m,version)
+    logger.info("[INFO] begin to read {}".format(os.path.basename(filename)))
     with h5py.File(filename, 'r') as h:
         X_train.append(np.array(h['train']))
         X_test.append(np.array(h['test']))
@@ -35,19 +70,21 @@ for filename in [gap_ResNet50, gap_Xception, gap_InceptionV3]:
 
 X_train = np.concatenate(X_train, axis=1)
 X_test = np.concatenate(X_test, axis=1)
-print(X_train.shape)
-print(X_test.shape)
 
-print("[INFO] shuffle")
+logger.info("train shape\r")
+logger.info(X_train.shape)
+logger.info("test shape\r")
+logger.info(X_test.shape)
+
+logger.info("[INFO] shuffle")
 X_train, y_train = shuffle(X_train, y_train)
 
 
-# In[2]:
 
 from keras.models import *
 from keras.layers import *
 
-print("[INFO] train")
+logger.info("[INFO] train")
 X_train, y_train = shuffle(X_train, y_train)
 input_tensor = Input(X_train.shape[1:])
 x = input_tensor
@@ -69,15 +106,10 @@ model.compile(optimizer='adadelta',
 #
 #SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
 
-
-# In[4]:
-
 model.fit(X_train, y_train, batch_size=128, nb_epoch=8, validation_split=0.2)
 
 
-# In[5]:
-
-print("[INFO] save model")
+logger.info("[INFO] save model")
 save_model(model,END_MODEL)
 
 
@@ -95,12 +127,12 @@ print("[INFO] save predict")
 import pandas as pd
 from keras.preprocessing.image import *
 
-df = pd.read_csv(DATA_PATH + "/sample_submission.csv")
+df = pd.read_csv("../data/output/sample_submission.csv")
 
 
 image_size = (224, 224)
 gen = ImageDataGenerator()
-test_generator = gen.flow_from_directory(test_data, image_size, shuffle=False, 
+test_generator = gen.flow_from_directory(test_path, image_size, shuffle=False,
                                          batch_size=1, class_mode=None)
 
 

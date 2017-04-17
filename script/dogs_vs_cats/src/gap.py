@@ -8,6 +8,8 @@ from keras.applications.inception_v3 import InceptionV3,conv2d_bn
 from keras.applications.inception_v3 import preprocess_input as inception_input
 
 from keras.applications.resnet50 import ResNet50
+from keras.applications.vgg16 import VGG16
+from keras.applications.vgg19 import VGG19
 
 from keras.applications.xception import Xception
 from keras.applications.xception import preprocess_input as xception_input
@@ -148,6 +150,7 @@ class feature_generation:
                 self.genration(VGG19,(224,224))
             else:
                 logger.error("{} model not found!".format(m))
+
 
 
 if __name__ == "__main__":
