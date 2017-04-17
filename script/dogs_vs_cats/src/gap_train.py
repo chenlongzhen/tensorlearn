@@ -61,7 +61,7 @@ X_test = []
 
 
 for m in use_model:
-    filename =  "../data/mode/gap_{}_{}.h5".format(m,version)
+    filename =  "../data/model/gap_{}_{}.h5".format(m,version)
     logger.info("[INFO] begin to read {}".format(os.path.basename(filename)))
     with h5py.File(filename, 'r') as h:
         X_train.append(np.array(h['train']))
