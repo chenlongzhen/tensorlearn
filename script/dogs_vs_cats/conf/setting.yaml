@@ -3,11 +3,12 @@
 #   chenlongzhen@autohome.com.cn
 #
 #------------common path------------
-version:  v1
+version:  v2
 #
 #------------common path------------
 #
-log_path:  /home/julyedu_51217/tensorlearn/script/dogs_vs_cats/data/logs
+prefix: /data/chenlongzhen/tensorlearn/
+log_path:  script/dogs_vs_cats/data/logs
 #------------path------------
 #genPath:只生成图片的特征，这个选项不是None那么，trainPath&testPath设置为None #                  testPic/
 #                       test/
@@ -37,8 +38,8 @@ log_path:  /home/julyedu_51217/tensorlearn/script/dogs_vs_cats/data/logs
 #testPath:   /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testPic'
 
 gen_path:    'None'
-train_path:  '/home/julyedu_51217/tensorlearn/script/vgg_finetune/data/train_v1'
-test_path:   '/home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testPic'
+train_path:  'script/vgg_finetune/data/train_v1'
+test_path:   'script/vgg_finetune/data/testPic'
 #train_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
 #test_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
 #------------model setting------------

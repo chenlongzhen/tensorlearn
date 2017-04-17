@@ -163,21 +163,25 @@ if __name__ == "__main__":
     
     version = CNF['version']
 
-    genPath = CNF['gen_path']
-    train_path = CNF['train_path']
-    testPath = CNF['test_path']
-    
+    prefix = CNF['prefix']
+
     use_model = CNF['use_model']
     gen_layer = CNF['gen_layer']
-    
-    log_path = CNF['log_path']
+
+    genPath = CNF['gen_path']
+    train_path = prefix + CNF['train_path']
+    test_path = prefix + CNF['test_path']
+    log_path = prefix + CNF['log_path']
+    if not os.path.isdir(train_path): os.mkdir(train_path)
+    if not os.path.isdir(test_path): os.mkdir(test_path)
+    if not os.path.isdir(log_path): os.mkdir(log_path)
 
     logger =  myLog(log_path+"/log_{}".format(version))  
     logger.info(CNF)
 
     gener = feature_generation(
         trainPath = train_path,
-        testPath = testPath,
+        testPath = test_path,
         version = version,
         genPath = genPath,
         gen_layer = gen_layer,
