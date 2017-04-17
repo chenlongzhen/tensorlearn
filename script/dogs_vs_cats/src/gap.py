@@ -21,6 +21,11 @@ import yaml
 
 import logging,datetime,sys,os,ConfigParser
 from logging.handlers import TimedRotatingFileHandler
+import timeit
+
+start = timeit.default_timer()
+print(start)
+
 
 ##############################
 # logging
@@ -197,3 +202,8 @@ if __name__ == "__main__":
 
 #write_gap(VGG19, (224, 224))
 
+#Your statements here
+
+stop = timeit.default_timer()
+
+print stop - start 
