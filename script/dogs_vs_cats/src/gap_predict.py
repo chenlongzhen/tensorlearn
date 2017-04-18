@@ -44,7 +44,7 @@ version = CNF['version']
 
 pre_fix = CNF['prefix']
 
-test_path = CNF['test_path']
+test_path = pre_fix + '/'+CNF['test_path']
 
 use_model = CNF['use_model']
 gen_layer = CNF['gen_layer']
@@ -63,11 +63,22 @@ END_MODEL =  "../data/endModel/endModel_{}.h5".format(version)
 
 save_path = pre_fix + '/' + CNF['save_path']
 
+X_test = []
+
+#################################
+# load test data
+#################################
+print("[INFO] load test data")
+for m in use_model:
+    filename =  "../data/model/gap_{}_{}.h5".format(m,version)
+    logger.info("[INFO] begin to read {}".format(os.path.basename(filename)))
+    with h5py.File(filename, 'r') as h:
+        X_test.append(np.array(h['test']))
+
+X_test = np.concatenate(X_test, axis=1)
 #################################
 # predict
 #################################
-X_train = []
-X_test = []
 
 from keras.models import *
 
@@ -76,7 +87,6 @@ model = load_model(END_MODEL)
 
 print("[INFO] predict")
 y_pred = model.predict(X_test, verbose=1)
-
 
 
 #################################
@@ -101,16 +111,7 @@ if dog_cat == 1:
     df.head(10)
 
 else:
-    with open(save_path,'w') as ifile:
+    with open("{}/out_{}".format(save_path,version),'w') as ifile:
         for i, fname in enumerate(test_generator.filenames):
-            ifile.write("{},{}\n".format(fname,pre_fix[i]))
-
-
-
-
-
-
-
-
-
+            ifile.write("{},{}\n".format(os.path.basename(fname),y_pred[i][0]))
 

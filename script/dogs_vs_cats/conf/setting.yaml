@@ -7,7 +7,8 @@ version:  v2
 #
 #------------common path------------
 #
-prefix: /data/chenlongzhen/tensorlearn/
+#prefix: /data/chenlongzhen/tensorlearn/
+prefix: /home/julyedu_51217/tensorlearn/
 log_path:  script/dogs_vs_cats/data/logs
 #------------path------------
 #genPath:只生成图片的特征，这个选项不是None那么，trainPath&testPath设置为None #                  testPic/
@@ -67,5 +68,5 @@ seed: 2017
 #dog_cat 是否是dogvscat
 #save_path 预测文件存储路径
 dog_cat: 0
-save_path: 'script/vgg_finetune/data'
+save_path: 'script/dogs_vs_cats/data/output'
 
