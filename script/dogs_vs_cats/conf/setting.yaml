@@ -7,8 +7,8 @@ version:  fc_v1
 #
 #------------common path------------
 #
-#prefix: /data/chenlongzhen/tensorlearn/
-prefix: /home/julyedu_51217/tensorlearn/
+prefix: /data/chenlongzhen/tensorlearn/
+#prefix: /home/julyedu_51217/tensorlearn/
 log_path:  script/dogs_vs_cats/data/logs
 #------------path------------
 #genPath:只生成图片的特征，这个选项不是None那么，trainPath&testPath设置为None #                  testPic/
