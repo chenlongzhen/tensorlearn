@@ -3,7 +3,7 @@
 #   chenlongzhen@autohome.com.cn
 #
 #------------common path------------
-version:  v2
+version:  fc_v1
 #
 #------------common path------------
 #
@@ -48,8 +48,8 @@ test_path:   'script/vgg_finetune/data/testPic'
 
 use_model:
     - ResNet50
-    - Xception
-    - InceptionV3
+#    - Xception
+#    - InceptionV3
     
 
 #------------layer setting------------
@@ -58,7 +58,8 @@ use_model:
 #fc: 最后一个fc的特征 
 #top: 完整网络输出的特征（即分类的结果）
 
-gen_layer: 'notop'
+#gen_layer: 'notop'
+gen_layer: 'top'
 
 #-----------shuffle-----------------
 # train 文件的额外设置项
