@@ -105,11 +105,14 @@ model.compile(optimizer='adadelta',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-model.fit(X_train, y_train, batch_size=128, nb_epoch=8, validation_split=0.2)
+model.fit(X_train, y_train, batch_size=128, nb_epoch=1, validation_split=0.2)
 
 logger.info("[INFO] save model")
 save_model(model,END_MODEL)
 
+#yaml test
+with open('../data/model.yaml','w') as ifile:
+    ifile.write(model.to_yaml())
 
 ## 预测
 #print("[INFO] predict")

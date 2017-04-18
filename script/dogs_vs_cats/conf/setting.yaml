@@ -50,7 +50,7 @@ use_model:
     - ResNet50
 #    - Xception
 #    - InceptionV3
-    
+#    - VGG16 
 
 #------------layer setting------------
 #产生那一层的特征
