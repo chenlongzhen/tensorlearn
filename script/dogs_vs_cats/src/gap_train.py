@@ -41,12 +41,15 @@ CNF = yaml.load(open('../conf/setting.yaml'))
 
 version = CNF['version']
 
+prefix = CNF['prefix']
+
 test_path = CNF['test_path']
 
 use_model = CNF['use_model']
+
 gen_layer = CNF['gen_layer']
 
-log_path = CNF['log_path']
+log_path = prefix + '/' + CNF['log_path']
 
 np.random.seed(int(CNF['seed']))
 
@@ -56,9 +59,12 @@ logger.info(CNF)
 submissionPath =  "../data/output/submission.csv"
 END_MODEL =  "../data/endModel/endModel_{}.h5".format(version)
 
+#################################
+# read features
+#################################
+
 X_train = []
 X_test = []
-
 
 for m in use_model:
     filename =  "../data/model/gap_{}_{}.h5".format(m,version)
@@ -79,7 +85,9 @@ logger.info(X_test.shape)
 logger.info("[INFO] shuffle")
 X_train, y_train = shuffle(X_train, y_train)
 
-
+#################################
+# train pipe
+#################################
 
 from keras.models import *
 from keras.layers import *
@@ -97,48 +105,36 @@ model.compile(optimizer='adadelta',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-
-
-## In[3]:
-#
-#from IPython.display import SVG
-#from keras.utils.visualize_util import model_to_dot, plot
-#
-#SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
-
 model.fit(X_train, y_train, batch_size=128, nb_epoch=8, validation_split=0.2)
-
 
 logger.info("[INFO] save model")
 save_model(model,END_MODEL)
 
 
-# In[6]:
-
-# 预测 
-print("[INFO] predict")
-y_pred = model.predict(X_test, verbose=1)
-y_pred = y_pred.clip(min=0.005, max=0.995)
-
-
-# In[7]:
-# 找回原来的文件名并和预测值保存    
-print("[INFO] save predict")
-import pandas as pd
-from keras.preprocessing.image import *
-
-df = pd.read_csv("../data/output/sample_submission.csv")
-
-
-image_size = (224, 224)
-gen = ImageDataGenerator()
-test_generator = gen.flow_from_directory(test_path, image_size, shuffle=False,
-                                         batch_size=1, class_mode=None)
-
-
-for i, fname in enumerate(test_generator.filenames):
-    index = int(fname[fname.rfind('/')+1:fname.rfind('.')])
-    df.set_value(index-1, 'label', y_pred[i])
-
-df.to_csv(submissionPath, index=None)
-df.head(10)
+## 预测
+#print("[INFO] predict")
+#y_pred = model.predict(X_test, verbose=1)
+#y_pred = y_pred.clip(min=0.005, max=0.995)
+#
+#
+## In[7]:
+## 找回原来的文件名并和预测值保存
+#print("[INFO] save predict")
+#import pandas as pd
+#from keras.preprocessing.image import *
+#
+#df = pd.read_csv("../data/output/sample_submission.csv")
+#
+#
+#image_size = (224, 224)
+#gen = ImageDataGenerator()
+#test_generator = gen.flow_from_directory(test_path, image_size, shuffle=False,
+#                                         batch_size=1, class_mode=None)
+#
+#
+#for i, fname in enumerate(test_generator.filenames):
+#    index = int(fname[fname.rfind('/')+1:fname.rfind('.')])
+#    df.set_value(index-1, 'label', y_pred[i])
+#
+#df.to_csv(submissionPath, index=None)
+#df.head(10)

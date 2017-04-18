@@ -75,16 +75,19 @@ class feature_generation:
         
         input_shape = image_size + (3,) # (x,x) => (x,x,3)
     
-        base_model = MODEL(input_shape=input_shape,weights='imagenet', include_top=False)
-        
+
         if self.gen_layer == 'notop':
+            base_model = MODEL(input_shape=input_shape,weights='imagenet', include_top=False)
             model = Model(base_model.input, GlobalAveragePooling2D()(base_model.output)) # model build, add a GAP layyer
         elif self.gen_layer == 'fc':
-            pass
+            base_model = MODEL(input_shape=input_shape,weights='imagenet', include_top=True)
+            base_model.pop()
+            model = Model(base_model.input, base_model.output) # model build, add a GAP layyer
         elif self.gen_layer == 'top':
-            pass
-    
-        #logger.info(model.summary())
+            base_model = MODEL(input_shape=input_shape,weights='imagenet', include_top=True)
+            model = base_model
+
+        logger.info(model.summary())
         return model
     
     

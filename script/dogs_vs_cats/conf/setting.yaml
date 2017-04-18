@@ -17,8 +17,7 @@ log_path:  script/dogs_vs_cats/data/logs
 #
 #
 #
-#trainPath:训练图片;需要生成图片的路径的上一级路径,
-#                 train_v1/ 
+#trainPath:训练图片;需要生成图片的路径的上一级路径, #                 train_v1/
 #                        dogs/ 
 #                            dog001.jpg 
 #                            dog002.jpg 
@@ -63,3 +62,10 @@ gen_layer: 'notop'
 #-----------shuffle-----------------
 # train 文件的额外设置项
 seed: 2017
+
+#----------predict setting----------
+#dog_cat 是否是dogvscat
+#save_path 预测文件存储路径
+dog_cat: 0
+save_path: 'script/vgg_finetune/data'
+
