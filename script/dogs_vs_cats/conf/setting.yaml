@@ -59,7 +59,7 @@ use_model:
 #top: 完整网络输出的特征（即分类的结果）
 
 #gen_layer: 'notop'
-gen_layer: 'top'
+gen_layer: 'fc'
 
 #-----------shuffle-----------------
 # train 文件的额外设置项
