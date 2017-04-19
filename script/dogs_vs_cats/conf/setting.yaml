@@ -3,7 +3,7 @@
 #   chenlongzhen@autohome.com.cn
 #
 #------------common path------------
-version:  fc_v1
+version:  cifar10_v1
 #
 #------------common path------------
 #
@@ -38,10 +38,12 @@ log_path:  script/dogs_vs_cats/data/logs
 #testPath:   /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testPic'
 
 gen_path:    'None'
-train_path:  'script/vgg_finetune/data/train_v1'
-test_path:   'script/vgg_finetune/data/testPic'
+#train_path:  'script/vgg_finetune/data/train_v1'
+#test_path:   'script/vgg_finetune/data/testPic'
 #train_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
 #test_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
+train_path: script/dogs_vs_cats/data/data_cifar/train
+test_path: script/dogs_vs_cats/data/data_cifar/test
 #------------model setting------------
 #使用那种模型产生特征
 #目前支持的模型有：

@@ -7,12 +7,12 @@ import os
 import sys
 
 # In[2]:
-origin_path = sys.argv[1]
-train_file_list = sys.argv[2]
-out_path = sys.argv[3]
+origin_path = os.path.abspath(sys.argv[1])
+train_file_list = os.path.abspath(sys.argv[2])
+out_path = os.path.abspath(sys.argv[3])
 
 
-train_filenames = os.listdir('train')
+#train_filenames = os.listdir('train')
 
 def mkdir(dir):
     if not os.path.isdir(dir):
@@ -21,7 +21,7 @@ def mkdir(dir):
 
 
 mkdir(out_path)
-with open(origin_path,'r') as rfile:
+with open(train_file_list,'r') as rfile:
     for num,line in enumerate(rfile):
         if num % 10000 == 1:
             print("[INFO] {} lines processed".format(num-1))
