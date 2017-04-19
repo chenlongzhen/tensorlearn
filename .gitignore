@@ -1,2 +1,5 @@
 *data
 *log
+*.swp
+.ipynb_checkpoints
+.idea
