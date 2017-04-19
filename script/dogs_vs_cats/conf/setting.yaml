@@ -50,8 +50,8 @@ test_path: script/dogs_vs_cats/data/data_cifar/test
 
 use_model:
     - ResNet50
-#    - Xception
-#    - InceptionV3
+    - Xception
+    - InceptionV3
 #    - VGG16 
 
 #------------layer setting------------
@@ -60,8 +60,8 @@ use_model:
 #fc: 最后一个fc的特征 
 #top: 完整网络输出的特征（即分类的结果）
 
-#gen_layer: 'notop'
-gen_layer: 'fc'
+gen_layer: 'notop'
+#gen_layer: 'fc'
 
 #-----------shuffle-----------------
 # train 文件的额外设置项
