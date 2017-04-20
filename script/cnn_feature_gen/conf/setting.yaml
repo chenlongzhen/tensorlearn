@@ -1,0 +1,75 @@
+# This is a conf of NN tool box
+# Author:
+#   chenlongzhen@autohome.com.cn
+#
+#------------common path------------
+version:  cifar10_v1
+#
+#------------common path------------
+#
+prefix: /data/chenlongzhen/tensorlearn/
+#prefix: /home/julyedu_51217/tensorlearn/
+log_path:  script/dogs_vs_cats/data/logs
+#------------path------------
+#genPath:只生成图片的特征，这个选项不是None那么，trainPath&testPath设置为None #                  testPic/
+#                       test/
+#                           0001.jpg
+#                           0002.jpg
+#
+#
+#
+#trainPath:训练图片;需要生成图片的路径的上一级路径, #                 train_v1/
+#                        dogs/ 
+#                            dog001.jpg 
+#                            dog002.jpg 
+#                            ... 
+#                        cats/ 
+#                            cat001.jpg 
+#                            cat002.jpg 
+#                            ... 
+#testPath:需要预测的图片;需要生成图片的路径的上一级路径,
+#                  testPic/
+#                       test/
+#                           0001.jpg
+#                           0002.jpg
+#example:
+#genPath:    None
+#trainPath:  /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/train_v1'
+#testPath:   /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testPic'
+
+gen_path:    'None'
+#train_path:  'script/vgg_finetune/data/train_v1'
+#test_path:   'script/vgg_finetune/data/testPic'
+#train_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
+#test_path: /home/julyedu_51217/tensorlearn/script/vgg_finetune/data/testTiny
+train_path: script/dogs_vs_cats/data/data_cifar/train
+test_path: script/dogs_vs_cats/data/data_cifar/test
+#------------model setting------------
+#使用那种模型产生特征
+#目前支持的模型有：
+
+use_model:
+    - ResNet50
+    - Xception
+    - InceptionV3
+#    - VGG16 
+
+#------------layer setting------------
+#产生那一层的特征
+#notop: 没有fc层的特征 目前是经过conv层后GlobalAveragePooling2D()后的结果.否则参数过多。
+#fc: 最后一个fc的特征 
+#top: 完整网络输出的特征（即分类的结果）
+
+gen_layer: 'notop'
+#gen_layer: 'fc'
+
+#-----------shuffle-----------------
+# train 文件的额外设置项
+seed: 2017
+
+#----------predict setting----------
+#dog_cat 是否是dogvscat
+#save_path 预测文件存储路径
+dog_cat: 0
+save_path: 'script/dogs_vs_cats/data/output'
+
